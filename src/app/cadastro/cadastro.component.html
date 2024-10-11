@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<div *ngIf="showForm" class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 text-right">
+      <button (click)="changeShowForm()" class="btn btn-danger btn-sm">X</button>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h3 class="mb-4 text-center">Formulário de Credenciamento</h3>
+      <!-- Campo tipo -->
+      <form (ngSubmit)="onSubmit()" [formGroup]="userForm" novalidate>
+        <div class="form-group row">
+          <label for="tipo" class="col-md-4 col-form-label">Tipo:*</label>
+          <div class="col-md-8">
+            <select formControlName="tipoCliente" class="form-control form-control-sm" id="tipo"
+              (change)="onTipoChange($event)">
+              <option value="fisica">Física</option>
+              <option value="juridica">Jurídica</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Campo CPF/CNPJ -->
+        <div class="form-group row">
+          <label for="documento" class="col-md-4 col-form-label">CPF/CNPJ:*</label>
+          <div class="col-md-8">
+            <input placeholder="CPF/CNPJ" [ngClass]="{'is-invalid': userForm.get('documento')?.invalid && submitted}" formControlName="documento" class="form-control form-control-sm" type="text" id="documento">
+          </div>
+        </div>
+
+        <!-- Campo Nome -->
+        <div class="form-group row">
+          <label for="name" class="col-md-4 col-form-label">Nome:*</label>
+          <div class="col-md-8">
+            <input placeholder="Fulano Silva" [ngClass]="{'is-invalid': userForm.get('nome')?.invalid && submitted}" formControlName="nome" class="form-control form-control-sm" type="text" id="name" required>
+          </div>
+        </div>
+
+        <!-- Campo Nome Fantasia (esconder para Pessoa Física) -->
+        <div *ngIf="mostrarNomeFantasia" class="form-group row">
+          <label for="nomeFantasia" class="col-md-4 col-form-label">Nome Fantasia:</label>
+          <div class="col-md-8">
+            <input ngClass="" formControlName="nomeFantasia" class="form-control form-control-sm" type="text" id="nomeFantasia">
+          </div>
+        </div>
+
+        <!-- Campo CEP -->
+        <div class="form-group row">
+          <label for="cep" class="col-md-4 col-form-label">CEP:*</label>
+          <div class="col-md-8">
+            <input [ngClass]="{'is-invalid': userForm.get('cep')?.invalid && submitted}" (blur)="consultaCep()" formControlName="cep" class="form-control form-control-sm" type="text" id="cep"
+              placeholder="00000-000" required>
+          </div>
+        </div>
+
+        <!-- Campos de Endereço -->
+        <div class="form-group row">
+          <label for="endereco" class="col-md-4 col-form-label">Endereço:*</label>
+          <div class="col-md-8">
+            <input placeholder="Endereço" [ngClass]="{'is-invalid': userForm.get('endereco')?.invalid && submitted}" formControlName="endereco" class="form-control form-control-sm" type="text" id="endereco">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="bairro" class="col-md-4 col-form-label">Bairro:*</label>
+          <div class="col-md-8">
+            <input placeholder="Bairro" [ngClass]="{'is-invalid': userForm.get('bairro')?.invalid && submitted}" formControlName="bairro" class="form-control form-control-sm" type="text" id="bairro">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="cidade" class="col-md-4 col-form-label">Cidade:*</label>
+          <div class="col-md-8">
+            <input placeholder="Cidade" [ngClass]="{'is-invalid': userForm.get('cidade')?.invalid && submitted}" formControlName="cidade" class="form-control form-control-sm" type="text" id="cidade">
+          </div>
+        </div>
+
+        <!-- Campo Telefone -->
+        <div class="form-group row">
+          <label for="telefone" class="col-md-4 col-form-label">Telefone:*</label>
+          <div class="col-md-8">
+            <input [ngClass]="{'is-invalid': userForm.get('telefone')?.invalid && submitted}" formControlName="telefone" class="form-control form-control-sm" type="text" id="telefone"
+              placeholder="(00) 00000-0000">
+          </div>
+        </div>
+
+        <!-- Campo E-mail -->
+        <div class="form-group row">
+          <label for="email" class="col-md-4 col-form-label">Email:*</label>
+          <div class="col-md-8">
+            <input [ngClass]="{'is-invalid': userForm.get('email')?.invalid && submitted}" formControlName="email" class="form-control form-control-sm" type="email" id="email"
+              placeholder="usuario@softti.com.br" required>
+          </div>
+        </div>
+
+        <!-- Botão Salvar -->
+        <div class="form-group row">
+          <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!showForm" class="container mt-4">
+  <div class="d-flex justify-content-start mb-3">
+    <button (click)="changeShowForm()" class="btn btn-primary">Novo</button>
+  </div>
+  <table border="1" class="table table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Endereço</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users; let i = index">
+        <td>{{user.cod}}</td>
+        <td>{{user.nome}}</td>
+        <td>{{user.endereco}}</td>
+        <td>{{user.email}}</td>
+      </tr>
+      <!-- Adicione mais linhas conforme necessário -->
+    </tbody>
+  </table>
+</div>
